@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.webMvc.demo.models.User;
 import com.webMvc.demo.repositories.UserRepository;
+import com.webMvc.demo.services.exceptions.DataBindViolationException;
+import com.webMvc.demo.services.exceptions.ObjectNotFoundException;
 
 
 @Service
@@ -22,7 +24,7 @@ public class UserService {
 
     public User findById(Long id) {
         Optional <User> user = this.userRepository.findById(id);
-        return user.orElseThrow(() -> new RuntimeException(
+        return user.orElseThrow(() -> new ObjectNotFoundException(
             "Usuário não encontrado! id: " + id + ", Tipo: " + User.class.getName()
         ));
     }
@@ -49,7 +51,7 @@ public class UserService {
         try {
             this.userRepository.deleteById(id);
         } catch (Exception e) {
-            throw new RuntimeException("Não é possível excluir pois existem entidades relacionadas!");
+            throw new DataBindViolationException("Não é possível excluir pois existem entidades relacionadas!");
         }
     }
 
